@@ -57,7 +57,7 @@ func CalculateTotalHosts(ipNet *net.IPNet) int {
 	return totalHosts
 }
 
-func TreeSub(treeA SpecialTree, treeB SpecialTree) (*SpecialTree, error) {
+func TreeSub(treeA SpecialTree, treeB SpecialTree) (SpecialTree, error) {
 	var sa []string
 	for _, node := range treeA.Subnets() {
 		if node.IsLast {
