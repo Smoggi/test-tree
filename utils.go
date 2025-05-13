@@ -76,7 +76,7 @@ func TreeSub(treeA SpecialTree, treeB SpecialTree) (SpecialTree, error) {
 	for _, cidr := range sa {
 		res.Insert(cidr, nil)
 	}
-	return res, nil
+	return *res, nil
 }
 
 func difference(a, b []string) []string {
