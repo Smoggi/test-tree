@@ -80,17 +80,17 @@ func TreeSub(treeA SpecialTree, treeB SpecialTree) (SpecialTree, error) {
 }
 
 func difference(a, b []string) []string {
-	m := make(map[string]bool)
-	for _, v := range b {
-		m[v] = true
+	mb := make(map[string]struct{}, len(b))
+	for _, x := range b {
+		mb[x] = struct{}{}
 	}
-	var res []string
-	for _, v := range a {
-		if !m[v] {
-			res = append(res, v)
+	var diff []string
+	for _, x := range a {
+		if _, found := mb[x]; !found {
+			diff = append(diff, x)
 		}
 	}
-	return res
+	return diff
 }
 
 func TreeMerge(treeA SpecialTree, treeB SpecialTree) (SpecialTree, error) {
