@@ -23,8 +23,8 @@ func NewSpecialTree() *SpecialTree {
 	}
 }
 
-func (t *SpecialTree) insertNode(prev *IPv4TreeNode, key string, size int, isLast bool) *IPv4TreeNode {
-	node := NewIPv4TreeNode(key, prev.PrefixLen+1, size, prev, isLast, nil)
+func (t *SpecialTree) insertNode(prev *IPv4TreeNode, key string, size int, isLast bool, info map[string]interface{}) *IPv4TreeNode {
+	node := NewIPv4TreeNode(key, prev.PrefixLen+1, size, prev, isLast, info)
 	t.nodes++
 	return node
 }
@@ -43,7 +43,7 @@ func (t *SpecialTree) Insert(cidr string, info map[string]interface{}) {
 		prev = node
 		node = prev.Child(string(bit))
 		if node == nil {
-			node = t.insertNode(prev, string(bit), size, false) //info ?
+			node = t.insertNode(prev, string(bit), size, false, info)
 		} else {
 			node.Update(node.PrefixLen, size)
 		}
@@ -107,3 +107,4 @@ func (t *SpecialTree) Subnets() []*IPv4TreeNode {
 	})
 	return result
 }
+
