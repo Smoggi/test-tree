@@ -150,7 +150,7 @@ func (n *IPv4TreeNode) GetInnerLastNodes() []*IPv4TreeNode {
 	var result []*IPv4TreeNode
 
 	for _, child := range n.Children {
-		if child != nil && !child.IsLast {
+		if child != nil {
 			result = append(result, child.GetInnerLastNodes()...)
 		}
 	}
