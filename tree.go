@@ -130,33 +130,33 @@ func (n *IPv4TreeNode) IteratorIPv4Tree() iter.Seq[IPv4TreeNode] {
 }
 
 // RecLastChildren рекурсивная функция для получения всех последних дочерних узлов взято из SpecialTree
-func (n *IPv4TreeNode) RecLastChildren() chan *IPv4TreeNode {
-	ch := make(chan *IPv4TreeNode)
-	go func() {
-		defer close(ch)
-		for _, child := range n.Children {
-			if child != nil && child.IsLast {
-				ch <- child
-			}
-			child.RecLastChildren()
+func (n *IPv4TreeNode) RecLastChildren() []*IPv4TreeNode {
+	var result []*IPv4TreeNode
+
+	if n.IsLast {
+		result = append(result, n)
+	}
+
+	for _, child := range n.Children {
+		if child != nil {
+			result = append(result, child.RecLastChildren()...)
 		}
-	}()
-	return ch
+	}
+
+	return result
 }
 
-// GetInnerLastNodes функция для получения всех внутренних последних дочерних узлов взято из SpecialTree
-func (n *IPv4TreeNode) GetInnerLastNodes() chan *IPv4TreeNode {
-	ch := make(chan *IPv4TreeNode)
-	go func() {
-		defer close(ch)
-		for _, child := range n.Children {
-			if child != nil && !child.IsLast {
-				child.GetInnerLastNodes()
-			}
-			child.RecLastChildren()
+func (n *IPv4TreeNode) GetInnerLastNodes() []*IPv4TreeNode {
+	var result []*IPv4TreeNode
+
+	for _, child := range n.Children {
+		if child != nil && !child.IsLast {
+			result = append(result, child.GetInnerLastNodes()...)
 		}
-	}()
-	return ch
+	}
+
+	result = append(result, n.RecLastChildren()...)
+	return result
 }
 
 // -----------------------------
@@ -309,11 +309,11 @@ func (t *IPv4Tree) Intree(ip string) bool {
 	for _, bit := range binIP {
 		prev := node
 		node = prev.Child(string(bit))
-		if node.IsLast || node.PrefixLen == prefixLen {
-			return true
-		}
 		if node == nil {
 			return false
+		}
+		if node.IsLast || node.PrefixLen == prefixLen {
+			return true
 		}
 	}
 	return true
